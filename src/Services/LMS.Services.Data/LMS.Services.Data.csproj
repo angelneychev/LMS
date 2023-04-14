@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\LMS.Data.Common\LMS.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\LMS.Data.Models\LMS.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Web\LMS.Web.ViewModels\LMS.Web.ViewModels.csproj" />
     <ProjectReference Include="..\LMS.Services.Mapping\LMS.Services.Mapping.csproj" />
   </ItemGroup>
 
