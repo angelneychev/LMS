@@ -9,13 +9,14 @@
 
     public class ApplicationUser : IdentityUser
     {
-        public ApplicationUser() : base()
+        public ApplicationUser()
         {
             this.Id = Guid.NewGuid().ToString();
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.IsFirstLogin = false;
+            this.Employees = new HashSet<Employee>();
         }
 
         [Required]
@@ -45,5 +46,7 @@
         public ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
         public ICollection<IdentityUserLogin<string>> Logins { get; set; }
+
+        public ICollection<Employee> Employees { get; set; }
     }
 }
