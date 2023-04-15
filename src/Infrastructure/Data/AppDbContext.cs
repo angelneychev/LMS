@@ -14,6 +14,10 @@
 
         public DbSet<Employee> Employees { get; set; }
 
+        public DbSet<Leave> Leaves { get; set; }
+
+        public DbSet<LeaveStatus> LeavingStatus { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
