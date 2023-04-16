@@ -3,6 +3,8 @@
     using Infrastructure.Entities;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using System.Reflection.Emit;
 
     public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
@@ -22,7 +24,20 @@
         {
             base.OnModelCreating(builder);
 
-            // builder.Entity<YourEntity>().HasOne(...);
+            builder.Entity<Employee>(entity =>
+            {
+                entity.HasOne(e => e.Department)
+                    .WithMany()
+                    .HasForeignKey(e => e.DepartmentId)
+                    .OnDelete(DeleteBehavior.NoAction);
+                //.OnUpdate(ReferentialAction.NoAction);
+
+                entity.HasOne(e => e.Company)
+                    .WithMany()
+                    .HasForeignKey(e => e.CompanyId)
+                    .OnDelete(DeleteBehavior.NoAction);
+                    //.OnUpdate(ReferentialAction.NoAction);
+            });
         }
     }
 }

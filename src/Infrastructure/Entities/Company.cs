@@ -33,6 +33,5 @@
         public string TaxIdentificationNumber { get; set; }
 
         public ICollection<Department> Departments { get; set; }
-
     }
 }

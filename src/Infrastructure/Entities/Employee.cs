@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infrastructure.Entities
+﻿namespace Infrastructure.Entities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     public class Employee
     {
@@ -13,6 +10,8 @@ namespace Infrastructure.Entities
         {
             this.Leaves = new HashSet<Leave>();
         }
+
+        public int Id { get; set; }
 
         public string UserId { get; set; }
 
@@ -33,6 +32,5 @@ namespace Infrastructure.Entities
         public DateTime? TerminatedDate { get; set; }
 
         public ICollection<Leave> Leaves { get; set; }
-
     }
 }

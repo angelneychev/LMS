@@ -16,7 +16,6 @@
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.IsFirstLogin = false;
-            this.Employees = new HashSet<Employee>();
         }
 
         [Required]
@@ -31,12 +30,10 @@
 
         public bool IsFirstLogin { get; set; }
 
-        // Audit info
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
 
-        // Deletable entity
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
@@ -47,6 +44,6 @@
 
         public ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
-        public ICollection<Employee> Employees { get; set; }
+        public Employee Employee { get; set; }
     }
 }

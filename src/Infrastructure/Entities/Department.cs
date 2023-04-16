@@ -5,9 +5,9 @@
     using System.ComponentModel.DataAnnotations;
 
     using static Infrastructure.Common.Validation.DepartmentValidation;
+
     public class Department
     {
-
         public int Id { get; set; }
 
         [Required]
