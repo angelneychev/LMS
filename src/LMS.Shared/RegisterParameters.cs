@@ -8,9 +8,11 @@ namespace LMS.Shared
     public class RegisterParameters
     {
         [Required]
+        [EmailAddress]
         public string UserName { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]

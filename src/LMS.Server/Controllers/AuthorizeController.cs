@@ -42,6 +42,7 @@ namespace LMS.Server.Controllers
             var user = new ApplicationUser();
 
             user.UserName = parameters.UserName;
+            user.Email = parameters.UserName;
 
             var result = await this.userManager.CreateAsync(user, parameters.Password);
 
@@ -49,12 +50,17 @@ namespace LMS.Server.Controllers
             {
                 return BadRequest(result.Errors.FirstOrDefault()?.Description);
             }
-
+            //TO DO
+            //foreach (var error in result.Errors)
+            //{
+            //    ModelState.AddModelError(string.Empty, error.Description);
+            //}
             return await Login(new LoginParameters
             {
                 UserName = parameters.UserName,
                 Password = parameters.Password
             });
+
         }
 
         [Authorize]
