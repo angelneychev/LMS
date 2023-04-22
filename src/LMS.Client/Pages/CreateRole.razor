@@ -1,0 +1,36 @@
+﻿@page "/createrole"
+@inject HttpClient Http
+@inject IAuthorizeApi AuthorizeApi
+@inject NavigationManager NavigationManager
+
+<h3>Create Role</h3>
+
+<EditForm Model="@CreateRoleModel" OnValidSubmit="@OnValidSubmit">
+    <div class="form-group">
+        <label for="RoleName">Role Name</label>
+        <InputText id="RoleName" class="form-control" @bind-Value="@CreateRoleModel.RoleName" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Role</button>
+</EditForm>
+
+<p>@Message</p>
+
+@code {
+    private CreateRoleParameters CreateRoleModel = new CreateRoleParameters();
+    private string Message = string.Empty;
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            await AuthorizeApi.CreateRole(CreateRoleModel);
+            Message = "Role created successfully!";
+            NavigationManager.NavigateTo("/"); // Replace "/" with the desired target page.
+        }
+        catch (Exception ex)
+        {
+            Message = $"Error: {ex.Message}";
+        }
+    }
+}

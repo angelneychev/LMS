@@ -46,7 +46,7 @@ namespace LMS.Client.Services.Implementations
         {
             //var stringContent = new StringContent(JsonSerializer.Serialize(registerParameters), Encoding.UTF8, "application/json");
             var result = await this.httpClient.PostAsJsonAsync("api/Authorize/Register", registerParameters);
-            
+
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 throw new Exception(await result.Content.ReadAsStringAsync());
@@ -55,7 +55,19 @@ namespace LMS.Client.Services.Implementations
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task<UserInfo> GetUserInfo() 
+        public async Task<UserInfo> GetUserInfo()
             => await this.httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
+
+        public async Task CreateRole(CreateRoleParameters createRoleParameters)
+        {
+            var result = await this.httpClient.PostAsJsonAsync("api/Authorize/CreateRole", createRoleParameters);
+
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                throw new Exception(await result.Content.ReadAsStringAsync());
+            }
+
+            result.EnsureSuccessStatusCode();
+        }
     }
 }

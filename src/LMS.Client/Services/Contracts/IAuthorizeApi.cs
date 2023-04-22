@@ -15,5 +15,7 @@ namespace LMS.Client.Services.Contracts
         Task Logout();
 
         Task<UserInfo> GetUserInfo();
+
+        Task CreateRole(CreateRoleParameters createRoleParameters);
     }
 }

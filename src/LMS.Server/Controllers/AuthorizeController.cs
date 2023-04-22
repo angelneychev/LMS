@@ -12,11 +12,13 @@ namespace LMS.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly RoleManager<ApplicationRole> roleManager;
 
-        public AuthorizeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthorizeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
         [HttpPost]
@@ -91,6 +93,26 @@ namespace LMS.Server.Controllers
                     //.Where(c => c.Type == "test-claim")
                     .ToDictionary(c => c.Type, c => c.Value)
             };
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleParameters parameters)
+        {
+            if (string.IsNullOrWhiteSpace(parameters.RoleName))
+            {
+                return BadRequest("Role name is required.");
+            }
+
+            var newRole = new ApplicationRole { Name = parameters.RoleName };
+
+            var result = await roleManager.CreateAsync(newRole);
+
+            if (result.Succeeded)
+            {
+                return Ok("Role created successfully!");
+            }
+
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
         }
     }
 }
