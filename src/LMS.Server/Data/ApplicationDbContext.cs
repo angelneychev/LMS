@@ -16,6 +16,16 @@ namespace LMS.Server.Data
         {
         }
 
+        public DbSet<Company> Companies { get; set; }
+
+        public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<Leave> Leaves { get; set; }
+
+        public DbSet<LeaveStatus> LeaveStatuses { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -24,6 +34,7 @@ namespace LMS.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             builder.Entity<ApplicationUser>(entity =>
             {
                 entity
@@ -35,18 +46,33 @@ namespace LMS.Server.Data
 
                 entity
                     .HasMany(e => e.Logins)
-                .WithOne()
-                .HasForeignKey(e => e.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithOne()
+                    .HasForeignKey(e => e.UserId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity
                     .HasMany(e => e.Roles)
-                .WithOne()
-                .HasForeignKey(e => e.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithOne()
+                    .HasForeignKey(e => e.UserId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
             });
+
+            //builder.Entity<Employee>(entity =>
+            //{
+            //    entity.HasOne(e => e.Department)
+            //        .WithMany()
+            //        .HasForeignKey(e => e.DepartmentId)
+            //        .OnDelete(DeleteBehavior.Restrict);
+            //    //.OnUpdate(ReferentialAction.NoAction);
+
+            //    entity.HasOne(e => e.Company)
+            //        .WithMany()
+            //        .HasForeignKey(e => e.CompanyId)
+            //        .OnDelete(DeleteBehavior.Restrict);
+            //    //.OnUpdate(ReferentialAction.NoAction);
+            //});
         }
 
     }
