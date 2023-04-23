@@ -18,5 +18,14 @@ namespace LMS.Shared
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
         public string PasswordConfirm { get; set; }
+
+        [Required]
+        public string UniqueCitizenshipNumber { get; set; }
+
+        [Required]
+        public string FullName { get; set; }
+        
+        [Required]
+        public string Role { get; set; }
     }
 }

@@ -42,18 +42,12 @@ namespace LMS.Client.Services.Implementations
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task Register(RegisterParameters registerParameters)
+        public async Task<HttpResponseMessage> Register(RegisterParameters parameters)
         {
-            //var stringContent = new StringContent(JsonSerializer.Serialize(registerParameters), Encoding.UTF8, "application/json");
-            var result = await this.httpClient.PostAsJsonAsync("api/Authorize/Register", registerParameters);
-
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                throw new Exception(await result.Content.ReadAsStringAsync());
-            }
-
-            result.EnsureSuccessStatusCode();
+            var response = await httpClient.PostAsJsonAsync("api/Authorize/Register", parameters);
+            return response;
         }
+
 
         public async Task<UserInfo> GetUserInfo()
             => await this.httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
@@ -69,5 +63,16 @@ namespace LMS.Client.Services.Implementations
 
             result.EnsureSuccessStatusCode();
         }
+
+        public async Task<List<RoleModel>> GetRolesAsync()
+        {
+            return await httpClient.GetFromJsonAsync<List<RoleModel>>("api/Authorize/Roles");
+        }
+
+        public async Task<IEnumerable<KeyValuePair<string, string>>> GetAllAsKeyValuePairs()
+        {
+            return await httpClient.GetFromJsonAsync<IEnumerable<KeyValuePair<string, string>>>("api/Authorize/GetAllAsKeyValuePairs");
+        }
+
     }
 }

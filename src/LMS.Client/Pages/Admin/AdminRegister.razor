@@ -1,0 +1,85 @@
+﻿@page "/admin/register"
+@inject IAuthorizeApi AuthorizeApi
+@inject NavigationManager NavigationManager
+
+
+<h3 class="mb-4">Register User</h3>
+
+<EditForm Model="RegisterParameters" OnValidSubmit="OnValidSubmit" class="needs-validation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="username">Email:</label>
+        <InputText id="username" class="form-control" @bind-Value="RegisterParameters.UserName" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password">Password:</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="RegisterParameters.Password" />
+    </div>
+
+    <div class="mb-3">
+        <label for="passwordConfirm">Confirm Password:</label>
+        <InputText id="passwordConfirm" type="password" class="form-control" @bind-Value="RegisterParameters.PasswordConfirm" />
+    </div>
+
+    <div class="mb-3">
+        <label for="uniqueCitizenshipNumber">Unique Citizenship Number:</label>
+        <InputText id="uniqueCitizenshipNumber" class="form-control" @bind-Value="RegisterParameters.UniqueCitizenshipNumber" />
+    </div>
+
+    <div class="mb-3">
+        <label for="fullName">Full Name:</label>
+        <InputText id="fullName" class="form-control" @bind-Value="RegisterParameters.FullName" />
+    </div>
+
+    <div class="mb-3">
+        <label for="role">Role:</label>
+        <InputSelect id="role" class="form-select" @bind-Value="RegisterParameters.Role">
+            <option value="">Select a role</option>
+            @foreach (var role in roles)
+            {
+                <option value="@role.Key">@role.Value</option>
+            }
+        </InputSelect>
+    </div>
+
+    <p>@message</p>
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private string? message;
+    private RegisterParameters RegisterParameters { get; set; } = new RegisterParameters();
+    private IEnumerable<KeyValuePair<string, string>> roles = new List<KeyValuePair<string, string>>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        roles = await AuthorizeApi.GetAllAsKeyValuePairs();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (RegisterParameters.Role == "Administrator")
+        {
+            // Show error message or handle accordingly
+            return;
+        }
+
+        // Call AuthorizeApi to register the user with the selected role
+        var response = await AuthorizeApi.Register(RegisterParameters);
+        if (response.IsSuccessStatusCode)
+        {
+            message = "User registered successfully.";
+            RegisterParameters = new RegisterParameters(); // Clear the form
+            StateHasChanged(); // Force the page to refresh and show the message
+        }
+        else
+        {
+            message = "Error registering the user.";
+            StateHasChanged(); // Force the page to refresh and show the error message
+        }
+    }
+}

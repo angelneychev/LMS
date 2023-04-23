@@ -1,6 +1,7 @@
 ﻿namespace LMS.Server.Models
 {
     using Microsoft.AspNetCore.Identity;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class ApplicationRole : IdentityRole
     {
@@ -15,8 +16,10 @@
             this.Id = Guid.NewGuid().ToString();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedOn { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? ModifiedOn { get; set; }
 
         public bool IsDeleted { get; set; }

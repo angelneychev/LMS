@@ -1,8 +1,10 @@
 ﻿using LMS.Server.Models;
 using LMS.Shared;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LMS.Server.Controllers
 {
@@ -37,32 +39,47 @@ namespace LMS.Server.Controllers
             return Ok();
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Register(RegisterParameters parameters)
         {
-            var user = new ApplicationUser();
-
-            user.UserName = parameters.UserName;
-            user.Email = parameters.UserName;
+            var user = new ApplicationUser
+            {
+                UserName = parameters.UserName,
+                Email = parameters.UserName,
+                UniqueCitizenshipNumber = parameters.UniqueCitizenshipNumber,
+                FullName = parameters.FullName,
+                CreatedOn = DateTime.UtcNow,
+                IsFirstLogin = false
+            };
 
             var result = await this.userManager.CreateAsync(user, parameters.Password);
 
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                return BadRequest(result.Errors.FirstOrDefault()?.Description);
-            }
-            //TO DO
-            //foreach (var error in result.Errors)
-            //{
-            //    ModelState.AddModelError(string.Empty, error.Description);
-            //}
-            return await Login(new LoginParameters
-            {
-                UserName = parameters.UserName,
-                Password = parameters.Password
-            });
+                if (!string.IsNullOrEmpty(parameters.Role))
+                {
+                    var role = await roleManager.FindByIdAsync(parameters.Role);
 
+                    if (role != null && role.Name != "Administrator")
+                    {
+                        var roleResult = await userManager.AddToRoleAsync(user, role.Name);
+                        if (!roleResult.Succeeded)
+                        {
+                            return BadRequest(roleResult.Errors.FirstOrDefault()?.Description);
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("Role does not exist or is not allowed.");
+                    }
+                }
+
+                await signInManager.SignInAsync(user, isPersistent: false);
+
+                return Ok("User registered successfully.");
+            }
+
+            return BadRequest(result.Errors.FirstOrDefault()?.Description);
         }
 
         [Authorize]
@@ -113,6 +130,34 @@ namespace LMS.Server.Controllers
             }
 
             return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<RoleModel>> GetRolesAsync()
+        {
+            var roles = roleManager.Roles;
+            var roleModels = new List<RoleModel>();
+
+            foreach (var role in roles)
+            {
+                roleModels.Add(new RoleModel { Id = role.Id, Name = role.Name });
+            }
+
+            return roleModels;
+        }
+
+        [HttpGet]
+        public IEnumerable<KeyValuePair<string, string>> GetAllAsKeyValuePairs()
+        {
+            return this.roleManager.Roles
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                })
+                .OrderBy(x => x.Name)
+                .ToList()
+                .Select(x => new KeyValuePair<string, string>(x.Id.ToString(), x.Name));
         }
     }
 }

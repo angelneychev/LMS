@@ -10,12 +10,18 @@ namespace LMS.Client.Services.Contracts
     {
         Task Login(LoginParameters loginParameters);
 
-        Task Register(RegisterParameters registerParameters);
+        //Task Register(RegisterParameters registerParameters);
+        Task<HttpResponseMessage> Register(RegisterParameters parameters);
 
         Task Logout();
 
         Task<UserInfo> GetUserInfo();
 
         Task CreateRole(CreateRoleParameters createRoleParameters);
+
+        Task<List<RoleModel>> GetRolesAsync();
+
+        Task<IEnumerable<KeyValuePair<string, string>>> GetAllAsKeyValuePairs();
+
     }
 }

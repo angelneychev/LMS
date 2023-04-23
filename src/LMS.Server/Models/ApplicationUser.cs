@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Identity;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     using static LMS.Server.Models.Common.Validation.ApplicationUserValidation;
 
@@ -28,8 +29,10 @@
 
         public bool IsFirstLogin { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedOn { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? ModifiedOn { get; set; }
 
         public bool IsDeleted { get; set; }

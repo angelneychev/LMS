@@ -31,6 +31,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
     // User settings
     options.User.RequireUniqueEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
