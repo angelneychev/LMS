@@ -8,4 +8,8 @@
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ViewModels\Departments\" />
+	</ItemGroup>
+
 </Project>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace LMS.Shared
+namespace LMS.Shared.ViewModels.UsersInRoles
 {
     public class LoginParameters
     {

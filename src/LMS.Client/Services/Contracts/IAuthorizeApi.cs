@@ -1,4 +1,4 @@
-﻿using LMS.Shared;
+﻿using LMS.Shared.ViewModels.UsersInRoles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,6 @@ namespace LMS.Client.Services.Contracts
     {
         Task Login(LoginParameters loginParameters);
 
-        //Task Register(RegisterParameters registerParameters);
         Task<HttpResponseMessage> Register(RegisterParameters parameters);
 
         Task Logout();
@@ -19,9 +18,7 @@ namespace LMS.Client.Services.Contracts
 
         Task CreateRole(CreateRoleParameters createRoleParameters);
 
-        Task<List<RoleModel>> GetRolesAsync();
-
-        Task<IEnumerable<KeyValuePair<string, string>>> GetAllAsKeyValuePairs();
+        Task<IEnumerable<KeyValuePair<string, string>>> GetAllRolesAsKeyValuePairs();
 
     }
 }

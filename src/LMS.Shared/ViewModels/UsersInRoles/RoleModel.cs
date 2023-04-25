@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.Shared
+namespace LMS.Shared.ViewModels.UsersInRoles
 {
     public class RoleModel
     {

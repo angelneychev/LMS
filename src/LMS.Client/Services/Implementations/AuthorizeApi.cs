@@ -1,19 +1,14 @@
 ﻿using LMS.Client.Services.Contracts;
-using LMS.Shared;
+using LMS.Shared.ViewModels.UsersInRoles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
 namespace LMS.Client.Services.Implementations
 {
+    using System.Net.Http.Json;
+
     public class AuthorizeApi : IAuthorizeApi
     {
         private readonly HttpClient httpClient;
@@ -25,7 +20,6 @@ namespace LMS.Client.Services.Implementations
 
         public async Task Login(LoginParameters loginParameters)
         {
-            //var stringContent = new StringContent(JsonSerializer.Serialize(loginParameters), Encoding.UTF8, "application/json");
             var result = await this.httpClient.PostAsJsonAsync("api/Authorize/Login", loginParameters);
 
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
@@ -43,11 +37,7 @@ namespace LMS.Client.Services.Implementations
         }
 
         public async Task<HttpResponseMessage> Register(RegisterParameters parameters)
-        {
-            var response = await httpClient.PostAsJsonAsync("api/Authorize/Register", parameters);
-            return response;
-        }
-
+            => await httpClient.PostAsJsonAsync("api/Authorize/Register", parameters);
 
         public async Task<UserInfo> GetUserInfo()
             => await this.httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
@@ -64,15 +54,10 @@ namespace LMS.Client.Services.Implementations
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task<List<RoleModel>> GetRolesAsync()
-        {
-            return await httpClient.GetFromJsonAsync<List<RoleModel>>("api/Authorize/Roles");
-        }
-
-        public async Task<IEnumerable<KeyValuePair<string, string>>> GetAllAsKeyValuePairs()
-        {
-            return await httpClient.GetFromJsonAsync<IEnumerable<KeyValuePair<string, string>>>("api/Authorize/GetAllAsKeyValuePairs");
-        }
+        public async Task<IEnumerable<KeyValuePair<string, string>>> GetAllRolesAsKeyValuePairs()
+            => await httpClient
+            .GetFromJsonAsync<IEnumerable<KeyValuePair<string, string>>>("api/Authorize/GetAllRolesAsKeyValuePairs")
+            ?? Enumerable.Empty<KeyValuePair<string, string>>();
 
     }
 }

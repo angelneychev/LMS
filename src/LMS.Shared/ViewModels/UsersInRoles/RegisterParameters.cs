@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace LMS.Shared
+namespace LMS.Shared.ViewModels.UsersInRoles
 {
     public class RegisterParameters
     {
@@ -24,7 +24,7 @@ namespace LMS.Shared
 
         [Required]
         public string FullName { get; set; }
-        
+
         [Required]
         public string Role { get; set; }
     }

@@ -1,5 +1,5 @@
 ﻿using LMS.Client.Services.Contracts;
-using LMS.Shared;
+using LMS.Shared.ViewModels.UsersInRoles;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;

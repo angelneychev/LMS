@@ -357,3 +357,5 @@ MigrationBackup/
 appsettings.Production.json
 *.min.css
 *.min.js
+**\LMS.Shared\
+*.docx

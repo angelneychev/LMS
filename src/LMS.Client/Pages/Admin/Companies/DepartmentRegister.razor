@@ -1,0 +1,59 @@
+﻿@page "/admin/departments/register"
+@attribute [Authorize(Roles = "Administrator")]
+@inject ICompanyApi CompanyApi
+@inject IDepartmentApi DepartmentApi
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-4">Register Department</h3>
+
+<EditForm Model="CreateDepartmentParameters" OnValidSubmit="OnValidSubmit" class="needs-validation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Add input fields for each property in CreateDepartmentParameters -->
+    <div class="form-group">
+        <label for="name">Department Name</label>
+        <InputText id="name" class="form-control" @bind-Value="CreateDepartmentParameters.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="companyId">Company</label>
+        <InputSelect id="companyId" class="form-control" @bind-Value="CreateDepartmentParameters.CompanyId">
+            <option value="">Select a company</option>
+            @foreach (var company in companies)
+            {
+                <option value="@company.Key">@company.Value</option>
+            }
+        </InputSelect>
+    </div>
+
+    <p>@message</p>
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private string? message;
+    private CreateDepartmentParameters CreateDepartmentParameters { get; set; } = new CreateDepartmentParameters();
+    private IEnumerable<KeyValuePair<string, string>> companies = new List<KeyValuePair<string, string>>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        companies = await CompanyApi.GetAllCompaniesAsKeyValuePairs();
+    }
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            await DepartmentApi.CreateDepartment(CreateDepartmentParameters);
+            message = "Department registered successfully.";
+            CreateDepartmentParameters = new CreateDepartmentParameters(); // Clear the form
+            StateHasChanged(); // Force the page to refresh and show the message
+        }
+        catch (Exception ex)
+        {
+            message = $"Error registering the department: {ex.Message}";
+            StateHasChanged(); // Force the page to refresh and show the error message
+        }
+    }
+}
+

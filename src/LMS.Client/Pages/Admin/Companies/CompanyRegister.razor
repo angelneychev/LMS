@@ -1,0 +1,62 @@
+﻿@page "/admin/companies/register"
+@attribute [Authorize(Roles = "Administrator")]
+@inject ICompanyApi CompanyApi
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-4">Register Company</h3>
+
+<EditForm Model="CreateCompanyParameters" OnValidSubmit="OnValidSubmit" class="needs-validation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name">Name:</label>
+        <InputText id="name" class="form-control" @bind-Value="CreateCompanyParameters.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="address">Address:</label>
+        <InputText id="address" class="form-control" @bind-Value="CreateCompanyParameters.Address" />
+    </div>
+
+    <div class="mb-3">
+        <label for="phoneNumber">Phone Number:</label>
+        <InputText id="phoneNumber" class="form-control" @bind-Value="CreateCompanyParameters.PhoneNumber" />
+    </div>
+
+    <div class="mb-3">
+        <label for="email">Email:</label>
+        <InputText id="email" class="form-control" @bind-Value="CreateCompanyParameters.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="taxIdentificationNumber">Tax Identification Number:</label>
+        <InputText id="taxIdentificationNumber" class="form-control" @bind-Value="CreateCompanyParameters.TaxIdentificationNumber" />
+    </div>
+
+    <p>@message</p>
+    <button type="submit" class="btn btn-primary">Create Company</button>
+</EditForm>
+
+@code {
+    private string? message;
+    private CreateCompanyParameters CreateCompanyParameters = new CreateCompanyParameters();
+
+    private async Task OnValidSubmit()
+    {
+        // Call CompanyApi to register the new company
+        var response = await CompanyApi.CreateCompany(CreateCompanyParameters);
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Company registered successfully.";
+            CreateCompanyParameters = new CreateCompanyParameters(); // Clear the form
+            StateHasChanged(); // Force the page to refresh and show the message
+        }
+        else
+        {
+            message = "Error registering the company.";
+            StateHasChanged(); // Force the page to refresh and show the error message
+        }
+    }
+}

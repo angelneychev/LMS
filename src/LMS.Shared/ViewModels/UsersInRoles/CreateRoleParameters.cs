@@ -1,4 +1,4 @@
-﻿namespace LMS.Shared
+﻿namespace LMS.Shared.ViewModels.UsersInRoles
 {
     public class CreateRoleParameters
     {

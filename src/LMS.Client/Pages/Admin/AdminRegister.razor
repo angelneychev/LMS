@@ -1,4 +1,5 @@
 ﻿@page "/admin/register"
+@attribute [Authorize(Roles = "Administrator")]
 @inject IAuthorizeApi AuthorizeApi
 @inject NavigationManager NavigationManager
 
@@ -45,7 +46,7 @@
         </InputSelect>
     </div>
 
-    <p>@message</p>
+    <p class="">@message</p>
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
 
@@ -57,7 +58,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        roles = await AuthorizeApi.GetAllAsKeyValuePairs();
+        //roles = await AuthorizeApi.GetAllAsKeyValuePairs();
+        roles = await AuthorizeApi.GetAllRolesAsKeyValuePairs();
     }
 
     private async Task OnValidSubmit()
