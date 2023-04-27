@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace LMS.Shared.ViewModels.UsersInRoles
+﻿namespace LMS.Shared.ViewModels.Employees
 {
-    public class RegisterParameters
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
+    public class RegisterUserAndEmployeeParameters
     {
         [Required]
         [EmailAddress]
@@ -30,5 +28,12 @@ namespace LMS.Shared.ViewModels.UsersInRoles
 
         [Required]
         public int CompanyId { get; set; }
+
+        public int? DepartmentId { get; set; }
+
+        public string Position { get; set; }
+
+        [Required]
+        public DateTime HiredDate { get; set; }
     }
 }

@@ -1,10 +1,12 @@
 ﻿namespace LMS.Server.Controllers
 {
+    using LMS.Server.Data;
     using LMS.Server.Models;
     using LMS.Shared.ViewModels.UsersInRoles;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
 
     [Route("api/[controller]/[action]")]
@@ -14,12 +16,15 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<ApplicationRole> roleManager;
+        private readonly ApplicationDbContext dbContext;
 
-        public AuthorizeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
+        public AuthorizeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
+            RoleManager<ApplicationRole> roleManager, ApplicationDbContext dbContext)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
+            this.dbContext = dbContext;
         }
 
         [HttpPost]
@@ -55,6 +60,27 @@
 
             if (result.Succeeded)
             {
+
+                // Add this code before creating the Employee object
+                if (parameters.CompanyId <= 0)
+                {
+                    return BadRequest("Company not selected or invalid.");
+                }
+
+                // Create the Employee object
+                var employee = new Employee
+                {
+                    UserId = user.Id,
+                    CompanyId = parameters.CompanyId,
+                    HiredDate = DateTime.UtcNow,
+                    CreatedOn = DateTime.UtcNow,
+                    Position = string.Empty
+                };
+
+                // Add the Employee object to the database
+                dbContext.Employees.Add(employee);
+                await dbContext.SaveChangesAsync();
+
                 if (!string.IsNullOrEmpty(parameters.Role))
                 {
                     var role = await roleManager.FindByIdAsync(parameters.Role);

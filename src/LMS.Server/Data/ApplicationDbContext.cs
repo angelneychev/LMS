@@ -61,11 +61,11 @@ namespace LMS.Server.Data
 
             builder.Entity<Employee>(entity =>
             {
-                entity.HasOne(e => e.Department)
-                    .WithMany()
-                    .HasForeignKey(e => e.DepartmentId)
-                    .OnDelete(DeleteBehavior.Restrict);
-                //.OnUpdate(ReferentialAction.NoAction);
+                //entity.HasOne(e => e.Department)
+                //    .WithMany()
+                //    .HasForeignKey(e => e.DepartmentId)
+                //    .OnDelete(DeleteBehavior.Restrict);
+                ////.OnUpdate(ReferentialAction.NoAction);
 
                 entity.HasOne(e => e.Company)
                     .WithMany()
