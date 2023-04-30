@@ -1,16 +1,20 @@
-﻿using LMS.Shared;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace LMS.Server.Controllers
+﻿namespace LMS.Server.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using LMS.Shared;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+
     [Route("api/[controller]")]
     [Authorize]
     public class SampleDataController : Controller
     {
-        private static string[] Summaries = new[]
+        private static string[] summaries = new[]
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching",
         };
 
         [HttpGet("[action]")]
@@ -21,7 +25,7 @@ namespace LMS.Server.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = summaries[rng.Next(summaries.Length)],
             });
         }
     }

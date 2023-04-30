@@ -1,18 +1,19 @@
-﻿using LMS.Client.Services.Contracts;
-using LMS.Shared.ViewModels.UsersInRoles;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace LMS.Client.States
+﻿namespace LMS.Client.States
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+
+    using LMS.Client.Services.Contracts;
+    using LMS.Shared.ViewModels.UsersInRoles;
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.AspNetCore.Components.Authorization;
+    using Microsoft.JSInterop;
+
     public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
         private UserInfo? userInfoCache;
@@ -27,28 +28,28 @@ namespace LMS.Client.States
         {
             await this.authorizeApi.Login(loginParameters);
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            this.NotifyAuthenticationStateChanged(this.GetAuthenticationStateAsync());
         }
 
         public async Task Register(RegisterParameters registerParameters)
         {
             await this.authorizeApi.Register(registerParameters);
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            this.NotifyAuthenticationStateChanged(this.GetAuthenticationStateAsync());
         }
 
         public async Task Logout()
         {
             await this.authorizeApi.Logout();
 
-            userInfoCache = null;
+            this.userInfoCache = null;
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            this.NotifyAuthenticationStateChanged(this.GetAuthenticationStateAsync());
         }
 
         private async Task<UserInfo> GetUserInfo()
         {
-            if (this.userInfoCache != null && this.userInfoCache.IsAuthenticated) 
+            if (this.userInfoCache != null && this.userInfoCache.IsAuthenticated)
             {
                 return this.userInfoCache;
             }
@@ -64,7 +65,7 @@ namespace LMS.Client.States
 
             try
             {
-                var userInfo = await GetUserInfo();
+                var userInfo = await this.GetUserInfo();
                 if (userInfo.IsAuthenticated)
                 {
                     var claims = new[] { new Claim(ClaimTypes.Name, userInfo.UserName) }

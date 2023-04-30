@@ -1,5 +1,10 @@
 ﻿namespace LMS.Server.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     using LMS.Server.Data;
     using LMS.Server.Models;
     using LMS.Shared.ViewModels.Departments;
@@ -25,13 +30,20 @@
             {
                 Name = parameters.Name,
                 CompanyId = (int)parameters.CompanyId,
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = DateTime.UtcNow,
             };
 
-            dbContext.Departments.Add(department);
-            await dbContext.SaveChangesAsync();
+            this.dbContext.Departments.Add(department);
+            await this.dbContext.SaveChangesAsync();
 
-            return Ok("Department created successfully.");
+            return this.Ok("Department created successfully.");
         }
+
+        [HttpGet]
+        public IEnumerable<KeyValuePair<string, string>> GetAllDepartmentsAsKeyValuePairs()
+            => this.dbContext.Departments
+                 .OrderBy(x => x.Name)
+                 .Select(x => new KeyValuePair<string, string>(x.Id.ToString(), x.Name))
+                 .ToList();
     }
 }

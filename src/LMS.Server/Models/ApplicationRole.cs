@@ -1,7 +1,9 @@
 ﻿namespace LMS.Server.Models
 {
-    using Microsoft.AspNetCore.Identity;
+    using System;
     using System.ComponentModel.DataAnnotations.Schema;
+
+    using Microsoft.AspNetCore.Identity;
 
     public class ApplicationRole : IdentityRole
     {

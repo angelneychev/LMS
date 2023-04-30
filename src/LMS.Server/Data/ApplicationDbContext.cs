@@ -1,14 +1,15 @@
-﻿using LMS.Server.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace LMS.Server.Data
+﻿namespace LMS.Server.Data
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using LMS.Server.Models;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -61,7 +62,7 @@ namespace LMS.Server.Data
 
             builder.Entity<Employee>(entity =>
             {
-                //entity.HasOne(e => e.Department)
+                // entity.HasOne(e => e.Department)
                 //    .WithMany()
                 //    .HasForeignKey(e => e.DepartmentId)
                 //    .OnDelete(DeleteBehavior.Restrict);
@@ -71,9 +72,9 @@ namespace LMS.Server.Data
                     .WithMany()
                     .HasForeignKey(e => e.CompanyId)
                     .OnDelete(DeleteBehavior.Restrict);
-                //.OnUpdate(ReferentialAction.NoAction);
+
+                // .OnUpdate(ReferentialAction.NoAction);
             });
         }
-
     }
 }

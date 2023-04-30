@@ -9,6 +9,7 @@
             public const int MaxLengthFullName = 100;
             public const int MinLengthFullName = 3;
         }
+
         public class CompanyValidation
         {
             public const int MinLengthCompanyName = 2;

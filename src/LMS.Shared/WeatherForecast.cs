@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LMS.Shared
+﻿namespace LMS.Shared
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     public class WeatherForecast
     {
         public DateTime Date { get; set; }
@@ -12,6 +12,6 @@ namespace LMS.Shared
 
         public string Summary { get; set; }
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public int TemperatureF => 32 + (int)(this.TemperatureC / 0.5556);
     }
 }

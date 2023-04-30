@@ -1,15 +1,21 @@
-﻿using LMS.Server.Data;
+﻿using System;
+using System.Threading.Tasks;
+
+using LMS.Server.Data;
 using LMS.Server.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
-// options.UseSqlite("Filename=data.db"));
+                options.UseSqlServer(connectionString)); // options.UseSqlite("Filename=data.db"));
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -44,7 +50,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -55,8 +60,8 @@ if (app.Environment.IsDevelopment())
 {
     using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
     {
-        //Note: Microsoft recommends to NOT migrate your database at Startup. 
-        //You should consider your migration strategy according to the guidelines.
+        // Note: Microsoft recommends to NOT migrate your database at Startup.
+        // You should consider your migration strategy according to the guidelines.
         serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
     }
 
@@ -65,6 +70,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

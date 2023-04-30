@@ -9,7 +9,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ViewModels\Departments\" />
+		<Folder Include="ViewModels\Departments\" />
 	</ItemGroup>
 
 </Project>

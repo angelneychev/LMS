@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LMS.Shared.ViewModels.UsersInRoles
+﻿namespace LMS.Shared.ViewModels.UsersInRoles
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     public class UserInfo
     {
         public bool IsAuthenticated { get; set; }

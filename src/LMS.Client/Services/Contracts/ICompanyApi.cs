@@ -1,7 +1,10 @@
 ﻿namespace LMS.Client.Services.Contracts
 {
-    using LMS.Shared.ViewModels.Companies;
+    using System.Collections.Generic;
+    using System.Net.Http;
     using System.Threading.Tasks;
+
+    using LMS.Shared.ViewModels.Companies;
 
     public interface ICompanyApi
     {

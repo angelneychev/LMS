@@ -1,11 +1,14 @@
-﻿using LMS.Shared.ViewModels.UsersInRoles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace LMS.Client.Services.Contracts
+﻿namespace LMS.Client.Services.Contracts
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
+    using LMS.Shared.ViewModels.Employees;
+    using LMS.Shared.ViewModels.UsersInRoles;
+
     public interface IAuthorizeApi
     {
         Task Login(LoginParameters loginParameters);
@@ -20,5 +23,6 @@ namespace LMS.Client.Services.Contracts
 
         Task<IEnumerable<KeyValuePair<string, string>>> GetAllRolesAsKeyValuePairs();
 
+        Task<HttpResponseMessage> RegisterUserAndEmployee(RegisterUserAndEmployeeParameters parameters);
     }
 }

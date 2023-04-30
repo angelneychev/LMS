@@ -1,13 +1,17 @@
-﻿using LMS.Client.Services.Contracts;
-using LMS.Shared.ViewModels.UsersInRoles;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace LMS.Client.Services.Implementations
+﻿namespace LMS.Client.Services.Implementations
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
     using System.Net.Http.Json;
+    using System.Threading.Tasks;
+
+    using LMS.Client.Services.Contracts;
+    using LMS.Shared.ViewModels.Employees;
+    using LMS.Shared.ViewModels.UsersInRoles;
+    using Microsoft.AspNetCore.Components;
+    using Microsoft.JSInterop;
 
     public class AuthorizeApi : IAuthorizeApi
     {
@@ -37,7 +41,7 @@ namespace LMS.Client.Services.Implementations
         }
 
         public async Task<HttpResponseMessage> Register(RegisterParameters parameters)
-            => await httpClient.PostAsJsonAsync("api/Authorize/Register", parameters);
+            => await this.httpClient.PostAsJsonAsync("api/Authorize/Register", parameters);
 
         public async Task<UserInfo> GetUserInfo()
             => await this.httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");
@@ -54,10 +58,12 @@ namespace LMS.Client.Services.Implementations
             result.EnsureSuccessStatusCode();
         }
 
+        public async Task<HttpResponseMessage> RegisterUserAndEmployee(RegisterUserAndEmployeeParameters parameters)
+            => await this.httpClient.PostAsJsonAsync("api/Authorize/RegisterUserAndEmployee", parameters);
+
         public async Task<IEnumerable<KeyValuePair<string, string>>> GetAllRolesAsKeyValuePairs()
-            => await httpClient
+            => await this.httpClient
             .GetFromJsonAsync<IEnumerable<KeyValuePair<string, string>>>("api/Authorize/GetAllRolesAsKeyValuePairs")
             ?? Enumerable.Empty<KeyValuePair<string, string>>();
-
     }
 }

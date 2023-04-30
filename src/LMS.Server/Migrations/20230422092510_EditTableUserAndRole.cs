@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-#nullable disable
-
-namespace LMS.Server.Migrations
+﻿namespace LMS.Server.Migrations
 {
+    using System;
+
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     /// <inheritdoc />
     public partial class EditTableUserAndRole : Migration
     {
@@ -30,7 +29,7 @@ namespace LMS.Server.Migrations
                 type: "nvarchar(100)",
                 maxLength: 100,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: string.Empty);
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsDeleted",
@@ -58,7 +57,7 @@ namespace LMS.Server.Migrations
                 type: "nvarchar(10)",
                 maxLength: 10,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: string.Empty);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreatedOn",

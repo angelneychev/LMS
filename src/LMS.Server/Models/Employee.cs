@@ -26,7 +26,7 @@
 
         public Department Department { get; set; }
 
-        public string Position { get; set; }
+        public string? Position { get; set; }
 
         public DateTime HiredDate { get; set; }
 

@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace LMS.Server.Models
+﻿namespace LMS.Server.Models
 {
+    using System;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public class Leave
     {
         public int Id { get; set; }

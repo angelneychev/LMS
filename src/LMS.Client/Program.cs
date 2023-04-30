@@ -1,10 +1,14 @@
-﻿using LMS.Client;
+﻿using System;
+using System.Net.Http;
+
+using LMS.Client;
 using LMS.Client.Services.Contracts;
 using LMS.Client.Services.Implementations;
 using LMS.Client.States;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

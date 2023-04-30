@@ -24,6 +24,10 @@
         public string FullName { get; set; }
 
         [Required]
+        [Phone]
+        public string PhoneNumber { get; set; }
+
+        [Required]
         public string Role { get; set; }
 
         [Required]
@@ -35,5 +39,7 @@
 
         [Required]
         public DateTime HiredDate { get; set; }
+
+        public string HRManagement { get; set; }
     }
 }

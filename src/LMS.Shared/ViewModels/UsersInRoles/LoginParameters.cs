@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-
-namespace LMS.Shared.ViewModels.UsersInRoles
+﻿namespace LMS.Shared.ViewModels.UsersInRoles
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Text;
+
     public class LoginParameters
     {
         [Required]
