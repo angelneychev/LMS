@@ -181,65 +181,80 @@
             {
                 return this.BadRequest("HR user not found or invalid.");
             }
-
-            var user = new ApplicationUser
+            // Start a transaction
+            using (var transaction = await this.dbContext.Database.BeginTransactionAsync()) 
             {
-                UserName = parameters.UserName,
-                Email = parameters.UserName,
-                UniqueCitizenshipNumber = parameters.UniqueCitizenshipNumber,
-                FullName = parameters.FullName,
-                PhoneNumber = parameters.PhoneNumber,
-                CreatedOn = DateTime.UtcNow,
-                IsFirstLogin = false,
-            };
-
-            var result = await this.userManager.CreateAsync(user, parameters.Password);
-
-            if (result.Succeeded)
-            {
-                if (parameters.CompanyId <= 0)
+                try
                 {
-                    return this.BadRequest("Company not selected or invalid.");
-                }
-
-                if (!string.IsNullOrEmpty(parameters.Role))
-                {
-                    var role = await this.roleManager.FindByIdAsync(parameters.Role);
-
-                    if (role != null && role.Name != "Administrator")
+                    var user = new ApplicationUser
                     {
-                        var roleResult = await this.userManager.AddToRoleAsync(user, role.Name);
+                        UserName = parameters.UserName,
+                        Email = parameters.UserName,
+                        UniqueCitizenshipNumber = parameters.UniqueCitizenshipNumber,
+                        FullName = parameters.FullName,
+                        PhoneNumber = parameters.PhoneNumber,
+                        CreatedOn = DateTime.UtcNow,
+                        IsFirstLogin = false,
+                    };
 
-                        if (!roleResult.Succeeded)
+                    var result = await this.userManager.CreateAsync(user, parameters.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        return this.BadRequest(result.Errors.FirstOrDefault()?.Description);
+                    }
+
+                    if (parameters.CompanyId <= 0)
+                    {
+                        return this.BadRequest("Company not selected or invalid.");
+                    }
+
+                    if (!string.IsNullOrEmpty(parameters.Role))
+                    {
+                        var role = await this.roleManager.FindByIdAsync(parameters.Role);
+
+                        if (role != null && role.Name != "Administrator")
                         {
-                            return this.BadRequest(roleResult.Errors.FirstOrDefault()?.Description);
+                            var roleResult = await this.userManager.AddToRoleAsync(user, role.Name);
+
+                            if (!roleResult.Succeeded)
+                            {
+                                return this.BadRequest(roleResult.Errors.FirstOrDefault()?.Description);
+                            }
+                        }
+                        else
+                        {
+                            return this.BadRequest("Role does not exist or is not allowed.");
                         }
                     }
-                    else
+
+                    var employee = new Employee
                     {
-                        return this.BadRequest("Role does not exist or is not allowed.");
-                    }
+                        UserId = user.Id,
+                        CompanyId = parameters.CompanyId,
+                        DepartmentId = parameters.DepartmentId,
+                        Position = parameters.Position,
+                        HiredDate = parameters.HiredDate,
+                        CreatedOn = DateTime.UtcNow,
+                    };
+
+                    this.dbContext.Employees.Add(employee);
+
+                    await this.dbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    await this.signInManager.SignInAsync(user, isPersistent: false);
+
+                    return this.Ok("User and employee registered successfully.");
                 }
-
-                var employee = new Employee
+                catch (Exception ex)
                 {
-                    UserId = user.Id,
-                    CompanyId = parameters.CompanyId,
-                    DepartmentId = parameters.DepartmentId,
-                    Position = parameters.Position,
-                    HiredDate = parameters.HiredDate,
-                    CreatedOn = DateTime.UtcNow,
-                };
+                    // If an error occurs, rollback the transaction
+                    await transaction.RollbackAsync(); 
 
-                this.dbContext.Employees.Add(employee);
-                await this.dbContext.SaveChangesAsync();
-
-                await this.signInManager.SignInAsync(user, isPersistent: false);
-
-                return this.Ok("User and employee registered successfully.");
+                    return this.BadRequest($"Error occurred while registering user and employee: {ex.Message}");
+                }
             }
-
-            return this.BadRequest(result.Errors.FirstOrDefault()?.Description);
         }
     }
 }
