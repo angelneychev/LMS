@@ -54,6 +54,21 @@
             return this.Ok();
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> IsFirstLogin()
+        {
+            var loggedInUserId = this.userManager.GetUserId(this.User);
+            var loggedInUser = await this.userManager.FindByIdAsync(loggedInUserId);
+
+            if (loggedInUser != null)
+            {
+                return this.Ok(loggedInUser.IsFirstLogin);
+            }
+
+            return this.BadRequest("User not found or not logged in.");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterParameters parameters)
         {
@@ -64,7 +79,7 @@
                 UniqueCitizenshipNumber = parameters.UniqueCitizenshipNumber,
                 FullName = parameters.FullName,
                 CreatedOn = DateTime.UtcNow,
-                IsFirstLogin = false,
+                IsFirstLogin = true,
             };
 
             var result = await this.userManager.CreateAsync(user, parameters.Password);
@@ -119,6 +134,31 @@
 
         [Authorize]
         [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordParameters parameters)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            if (user == null)
+            {
+                return this.BadRequest("User not found or not logged in.");
+            }
+
+            var result = await this.userManager.ChangePasswordAsync(user, parameters.CurrentPassword, parameters.NewPassword);
+
+            if (result.Succeeded)
+            {
+                user.IsFirstLogin = false;
+                await this.userManager.UpdateAsync(user);
+
+                return this.Ok("Password changed successfully.");
+            }
+
+            return this.BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+
+
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await this.signInManager.SignOutAsync();
@@ -127,20 +167,32 @@
         }
 
         [HttpGet]
-        public UserInfo UserInfo()
+        public async Task<UserInfo> UserInfoAsync()
         {
-            return this.BuildUserInfo();
+            var user = await this.userManager.GetUserAsync(this.User);
+            return this.BuildUserInfo(user);
+            //return this.BuildUserInfo();
         }
 
-        private UserInfo BuildUserInfo()
+        private UserInfo BuildUserInfo(ApplicationUser user)
         {
             return new UserInfo
             {
                 IsAuthenticated = this.User.Identity.IsAuthenticated,
                 UserName = this.User.Identity.Name,
                 ExposedClaims = this.User.Claims.ToDictionary(c => c.Type, c => c.Value),
+                IsFirstLogin = user?.IsFirstLogin ?? false,
             };
         }
+        //private UserInfo BuildUserInfo()
+        //{
+        //    return new UserInfo
+        //    {
+        //        IsAuthenticated = this.User.Identity.IsAuthenticated,
+        //        UserName = this.User.Identity.Name,
+        //        ExposedClaims = this.User.Claims.ToDictionary(c => c.Type, c => c.Value),
+        //    };
+        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleParameters parameters)
@@ -194,7 +246,7 @@
                         FullName = parameters.FullName,
                         PhoneNumber = parameters.PhoneNumber,
                         CreatedOn = DateTime.UtcNow,
-                        IsFirstLogin = false,
+                        IsFirstLogin = true,
                     };
 
                     var result = await this.userManager.CreateAsync(user, parameters.Password);

@@ -34,6 +34,18 @@
             result.EnsureSuccessStatusCode();
         }
 
+        public async Task<bool> IsFirstLogin()
+        {
+            var response = await this.httpClient.GetAsync("api/Authorize/IsFirstLogin");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<bool>();
+            }
+
+            throw new Exception("Failed to check IsFirstLogin status.");
+        }
+
+
         public async Task Logout()
         {
             var result = await this.httpClient.PostAsync("api/Authorize/Logout", null);
@@ -42,6 +54,18 @@
 
         public async Task<HttpResponseMessage> Register(RegisterParameters parameters)
             => await this.httpClient.PostAsJsonAsync("api/Authorize/Register", parameters);
+
+        public async Task ChangePassword(ChangePasswordParameters parameters)
+        {
+            var result = await this.httpClient.PostAsJsonAsync("api/Authorize/ChangePassword", parameters);
+
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                throw new Exception(await result.Content.ReadAsStringAsync());
+            }
+
+            result.EnsureSuccessStatusCode();
+        }
 
         public async Task<UserInfo> GetUserInfo()
             => await this.httpClient.GetFromJsonAsync<UserInfo>("api/Authorize/UserInfo");

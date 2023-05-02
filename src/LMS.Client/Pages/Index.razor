@@ -1,5 +1,7 @@
 ﻿@page "/"
 @attribute [Authorize]
+@inject IAuthorizeApi AuthorizeApi
+@inject NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
 
@@ -15,3 +17,17 @@
         <h1>Loading ...</h1>
     </Authorizing>
 </AuthorizeView>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isFirstLogin = await AuthorizeApi.IsFirstLogin();
+            if (isFirstLogin)
+            {
+                NavigationManager.NavigateTo("/changepassword");
+            }
+        }
+    }
+}

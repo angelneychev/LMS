@@ -15,7 +15,11 @@
 
         Task<HttpResponseMessage> Register(RegisterParameters parameters);
 
+        Task ChangePassword(ChangePasswordParameters parameters);
+
         Task Logout();
+
+        Task<bool> IsFirstLogin();
 
         Task<UserInfo> GetUserInfo();
 

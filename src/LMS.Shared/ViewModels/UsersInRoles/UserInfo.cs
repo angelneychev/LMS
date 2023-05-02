@@ -10,6 +10,8 @@
 
         public string UserName { get; set; }
 
+        public bool IsFirstLogin { get; set; }
+
         public Dictionary<string, string> ExposedClaims { get; set; }
     }
 }
