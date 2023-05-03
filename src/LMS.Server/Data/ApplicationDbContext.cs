@@ -27,6 +27,8 @@
 
         public DbSet<LeaveStatus> LeaveStatuses { get; set; }
 
+        public DbSet<LeaveType> LeaveTypes { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

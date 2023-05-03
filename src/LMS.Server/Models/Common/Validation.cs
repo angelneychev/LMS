@@ -24,5 +24,11 @@
             public const int MinLengthDepartmentName = 2;
             public const int MaxLengthDepartmentName = 100;
         }
+
+        public class LeaveTypeValidation
+        {
+            public const int MinLengthLeaveTypeName = 3;
+            public const int MaxLengthLeaveTypeName = 50;
+        }
     }
 }
