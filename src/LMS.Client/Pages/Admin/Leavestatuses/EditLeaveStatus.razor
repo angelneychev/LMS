@@ -1,0 +1,32 @@
+﻿@page "/admin/leavestatuses/edit/{LeaveStatusId}"
+@attribute [Authorize(Roles = "Administrator")]
+@inject ILeaveStatusApi LeaveStatusApi
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-4">Edit Leave Status</h3>
+
+<EditForm Model="CreateEditLeaveStatusParameters" OnValidSubmit="OnValidSubmit" class="needs-validation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name">Name:</label>
+        <InputText id="name" class="form-control" @bind-Value="CreateEditLeaveStatusParameters.Name" />
+    </div>
+
+    <p>@message</p>
+    <button type="submit" class="btn btn-primary">Update Leave Status</button>
+</EditForm>
+
+@code {
+    [Parameter] public int LeaveStatusId { get; set; }
+    private string? message;
+    private CreateEditLeaveStatusParameters CreateEditLeaveStatusParameters = new CreateEditLeaveStatusParameters();
+
+    private async Task OnValidSubmit()
+    {
+        await LeaveStatusApi.UpdateLeaveStatus(LeaveStatusId, CreateEditLeaveStatusParameters);
+        message = "Leave status updated successfully.";
+        StateHasChanged(); // Force the page to refresh and show the message
+    }
+}
