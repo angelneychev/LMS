@@ -21,6 +21,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredServic
 builder.Services.AddScoped<IAuthorizeApi, AuthorizeApi>();
 builder.Services.AddScoped<ICompanyApi, CompanyApi>();
 builder.Services.AddScoped<ILeaveStatusApi, LeaveStatusApi>();
+builder.Services.AddScoped<ILeaveTypeApi, LeaveTypeApi>();
 builder.Services.AddScoped<IDepartmentApi, DepartmentApi>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
