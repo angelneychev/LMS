@@ -23,6 +23,7 @@ builder.Services.AddScoped<ICompanyApi, CompanyApi>();
 builder.Services.AddScoped<ILeaveStatusApi, LeaveStatusApi>();
 builder.Services.AddScoped<ILeaveTypeApi, LeaveTypeApi>();
 builder.Services.AddScoped<IDepartmentApi, DepartmentApi>();
+builder.Services.AddScoped<IEmployeeApi, EmployeeApi>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 await builder.Build().RunAsync();

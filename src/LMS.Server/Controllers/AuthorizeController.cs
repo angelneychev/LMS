@@ -184,15 +184,6 @@
                 IsFirstLogin = user?.IsFirstLogin ?? false,
             };
         }
-        //private UserInfo BuildUserInfo()
-        //{
-        //    return new UserInfo
-        //    {
-        //        IsAuthenticated = this.User.Identity.IsAuthenticated,
-        //        UserName = this.User.Identity.Name,
-        //        ExposedClaims = this.User.Claims.ToDictionary(c => c.Type, c => c.Value),
-        //    };
-        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleParameters parameters)

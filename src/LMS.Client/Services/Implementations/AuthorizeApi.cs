@@ -89,5 +89,6 @@
             => await this.httpClient
             .GetFromJsonAsync<IEnumerable<KeyValuePair<string, string>>>("api/Authorize/GetAllRolesAsKeyValuePairs")
             ?? Enumerable.Empty<KeyValuePair<string, string>>();
+ 
     }
 }

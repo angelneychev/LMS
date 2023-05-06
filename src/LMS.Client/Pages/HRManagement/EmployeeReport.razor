@@ -1,0 +1,45 @@
+﻿@page "/employeereport"
+@attribute [Authorize(Roles = "Human Resources")]
+@inject IEmployeeApi EmployeeApi
+
+<h3>Employee Report</h3>
+
+@if (employeeReportParameters == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Company Name</th>
+                <th>Role</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in employeeReportParameters)
+            {
+                <tr>
+                    <td>@item.FullName</td>
+                    <td>@item.Email</td>
+                    <td>@item.CompanyName</td>
+                    <td>@item.Role</td>
+                    <td>@item.Department</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<EmployeeReportParameters> employeeReportParameters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeeReportParameters = await EmployeeApi.GetEmployeesByCompany();
+    }
+}
