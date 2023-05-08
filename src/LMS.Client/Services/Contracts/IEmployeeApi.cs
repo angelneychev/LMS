@@ -11,6 +11,8 @@
 
     public interface IEmployeeApi
     {
+        Task<HttpResponseMessage> EmployeeRegister(EmployeeRegisterParameters parameters);
+
         Task<IEnumerable<EmployeeReportParameters>> GetEmployeesByCompany();
     }
 }

@@ -1,45 +1,75 @@
-﻿@page "/employeereport"
+﻿@page "/hr/employeereport"
 @attribute [Authorize(Roles = "Human Resources")]
 @inject IEmployeeApi EmployeeApi
 
-<h3>Employee Report</h3>
+<div class="container-fluid h-100 my-3">
+    <div class="row h-100 px-3">
+        <div class="col-12">
+            <h3 class="mb-4 mt-4">Employee Report</h3>
 
-@if (employeeReportParameters == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Company Name</th>
-                <th>Role</th>
-                <th>Department</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in employeeReportParameters)
+            @if (employeeReportParameters == null)
             {
-                <tr>
-                    <td>@item.FullName</td>
-                    <td>@item.Email</td>
-                    <td>@item.CompanyName</td>
-                    <td>@item.Role</td>
-                    <td>@item.Department</td>
-                </tr>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+            else
+            {
+                <div class="input-group mb-3 justify-content-end">
+                    <input type="text" class="form-control" placeholder="Search by Full Name" @bind="searchText" />
+                    <span class="input-group-text custom-search" id="search-addon">
+                        <i class="bi bi-search"></i>
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Company Name</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in FilterEmployees())
+                            {
+                                <tr>
+                                    <td>@item.FullName</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.CompanyName</td>
+                                    <td>@item.Role</td>
+                                    <td>@item.Department</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 
 @code {
     private IEnumerable<EmployeeReportParameters> employeeReportParameters;
+    private string searchText = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         employeeReportParameters = await EmployeeApi.GetEmployeesByCompany();
+    }
+
+    private IEnumerable<EmployeeReportParameters> FilterEmployees()
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return employeeReportParameters;
+        }
+
+        return employeeReportParameters.Where(e => e.FullName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
     }
 }

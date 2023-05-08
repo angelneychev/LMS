@@ -82,9 +82,6 @@
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task<HttpResponseMessage> RegisterUserAndEmployee(RegisterUserAndEmployeeParameters parameters)
-            => await this.httpClient.PostAsJsonAsync("api/Authorize/RegisterUserAndEmployee", parameters);
-
         public async Task<IEnumerable<KeyValuePair<string, string>>> GetAllRolesAsKeyValuePairs()
             => await this.httpClient
             .GetFromJsonAsync<IEnumerable<KeyValuePair<string, string>>>("api/Authorize/GetAllRolesAsKeyValuePairs")

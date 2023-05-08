@@ -24,7 +24,5 @@
         Task CreateRole(CreateRoleParameters createRoleParameters);
 
         Task<IEnumerable<KeyValuePair<string, string>>> GetAllRolesAsKeyValuePairs();
-
-        Task<HttpResponseMessage> RegisterUserAndEmployee(RegisterUserAndEmployeeParameters parameters);
     }
 }

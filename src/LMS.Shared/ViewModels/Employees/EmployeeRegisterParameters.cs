@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class RegisterUserAndEmployeeParameters
+    public class EmployeeRegisterParameters
     {
         [Required]
         [EmailAddress]

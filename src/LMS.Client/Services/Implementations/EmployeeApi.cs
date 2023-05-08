@@ -20,9 +20,10 @@
         }
 
         public async Task<IEnumerable<EmployeeReportParameters>> GetEmployeesByCompany()
-        {
-            return await this.httpClient.GetFromJsonAsync<IEnumerable<EmployeeReportParameters>>("api/Employee/GetEmployeesByCompany");
-        }
+            => await this.httpClient.GetFromJsonAsync<IEnumerable<EmployeeReportParameters>>("api/Employee/GetEmployeesByCompany");
+
+        public async Task<HttpResponseMessage> EmployeeRegister(EmployeeRegisterParameters parameters)
+           => await this.httpClient.PostAsJsonAsync("api/Employee/EmployeeRegister", parameters);
 
     }
 }

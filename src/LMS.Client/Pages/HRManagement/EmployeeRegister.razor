@@ -3,47 +3,48 @@
 @inject IAuthorizeApi AuthorizeApi
 @inject ICompanyApi CompanyApi
 @inject IDepartmentApi DepartmentApi
+@inject IEmployeeApi EmployeeApi
 @inject NavigationManager NavigationManager
 
 <h3 class="mb-4">Register Employee</h3>
 
-<EditForm Model="RegisterUserAndEmployeeParameters" OnValidSubmit="OnValidSubmit" class="needs-validation">
+<EditForm Model="EmployeeRegisterParameters" OnValidSubmit="OnValidSubmit" class="needs-validation">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-3">
         <label for="username">Email:</label>
-        <InputText id="username" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.UserName" />
+        <InputText id="username" class="form-control" @bind-Value="EmployeeRegisterParameters.UserName" />
     </div>
 
     <div class="mb-3">
         <label for="password">Password:</label>
-        <InputText id="password" type="password" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.Password" />
+        <InputText id="password" type="password" class="form-control" @bind-Value="EmployeeRegisterParameters.Password" />
     </div>
 
     <div class="mb-3">
         <label for="passwordConfirm">Confirm Password:</label>
-        <InputText id="passwordConfirm" type="password" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.PasswordConfirm" />
+        <InputText id="passwordConfirm" type="password" class="form-control" @bind-Value="EmployeeRegisterParameters.PasswordConfirm" />
     </div>
 
     <div class="mb-3">
         <label for="uniqueCitizenshipNumber">Unique Citizenship Number:</label>
-        <InputText id="uniqueCitizenshipNumber" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.UniqueCitizenshipNumber" />
+        <InputText id="uniqueCitizenshipNumber" class="form-control" @bind-Value="EmployeeRegisterParameters.UniqueCitizenshipNumber" />
     </div>
 
     <div class="mb-3">
         <label for="fullName">Full Name:</label>
-        <InputText id="fullName" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.FullName" />
+        <InputText id="fullName" class="form-control" @bind-Value="EmployeeRegisterParameters.FullName" />
     </div>
 
     <div class="mb-3">
         <label for="phoneNumber">Phone Number:</label>
-        <InputText id="phoneNumber" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.PhoneNumber" />
+        <InputText id="phoneNumber" class="form-control" @bind-Value="EmployeeRegisterParameters.PhoneNumber" />
     </div>
 
     <div class="mb-3">
         <label for="role">Role:</label>
-        <InputSelect id="role" class="form-select" @bind-Value="RegisterUserAndEmployeeParameters.Role">
+        <InputSelect id="role" class="form-select" @bind-Value="EmployeeRegisterParameters.Role">
             <option value="">Select a role</option>
             @foreach (var role in roles)
             {
@@ -54,7 +55,7 @@
 
     <div class="mb-3">
         <label for="companyId">Company:</label>
-        <InputSelect id="companyId" class="form-select" @bind-Value="RegisterUserAndEmployeeParameters.CompanyId">
+        <InputSelect id="companyId" class="form-select" @bind-Value="EmployeeRegisterParameters.CompanyId">
             <option value="">Select a company</option>
             @foreach (var company in companies)
             {
@@ -65,7 +66,7 @@
 
     <div class="mb-3">
         <label for="departmentId">Department:</label>
-        <InputSelect id="departmentId" class="form-select" @bind-Value="RegisterUserAndEmployeeParameters.DepartmentId">
+        <InputSelect id="departmentId" class="form-select" @bind-Value="EmployeeRegisterParameters.DepartmentId">
             <option value="">Select a department</option>
             @foreach (var department in departments)
             {
@@ -76,11 +77,11 @@
 
     <div class="mb-3">
         <label for="position">Position:</label>
-        <InputText id="position" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.Position" />
+        <InputText id="position" class="form-control" @bind-Value="EmployeeRegisterParameters.Position" />
     </div>
     <div class="mb-3">
         <label for="hiredDate">Hired Date:</label>
-        <InputDate id="hiredDate" class="form-control" @bind-Value="RegisterUserAndEmployeeParameters.HiredDate" />
+        <InputDate id="hiredDate" class="form-control" @bind-Value="EmployeeRegisterParameters.HiredDate" />
     </div>
 
     <p class="">@message</p>
@@ -89,7 +90,7 @@
 
 @code {
     private string? message;
-    private RegisterUserAndEmployeeParameters RegisterUserAndEmployeeParameters { get; set; } = new RegisterUserAndEmployeeParameters();
+    private EmployeeRegisterParameters EmployeeRegisterParameters { get; set; } = new EmployeeRegisterParameters();
     private IEnumerable<KeyValuePair<string, string>> roles = new List<KeyValuePair<string, string>>();
     private IEnumerable<KeyValuePair<string, string>> companies = new List<KeyValuePair<string, string>>();
     private IEnumerable<KeyValuePair<string, string>> departments = new List<KeyValuePair<string, string>>();
@@ -103,16 +104,16 @@
 
     private async Task OnValidSubmit()
     {
-        if (RegisterUserAndEmployeeParameters.Role == "Human Resources")
+        if (EmployeeRegisterParameters.Role == "Human Resources")
         {
             // Show error message or handle accordingly
             return;
         }
-        var response = await AuthorizeApi.RegisterUserAndEmployee(RegisterUserAndEmployeeParameters);
+        var response = await EmployeeApi.EmployeeRegister(EmployeeRegisterParameters);
         if (response.IsSuccessStatusCode)
         {
             message = "Employee registered successfully.";
-            RegisterUserAndEmployeeParameters = new RegisterUserAndEmployeeParameters(); // Clear the form
+            EmployeeRegisterParameters = new EmployeeRegisterParameters(); // Clear the form
             StateHasChanged(); // Force the page to refresh and show the message
         }
         else
