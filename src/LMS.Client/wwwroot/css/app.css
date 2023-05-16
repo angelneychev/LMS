@@ -99,3 +99,32 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+.btn-custom-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+    .btn-custom-primary:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+    }
+
+.btn-custom-danger {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+}
+
+    .btn-custom-danger:hover {
+        background-color: #c0392b;
+        border-color: #c0392b;
+    }
+
+.btn-custom-secondary {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+}
+
+    .btn-custom-secondary:hover {
+        background-color: #7f8c8d;
+        border-color: #7f8c8d;
+    }

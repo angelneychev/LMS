@@ -14,5 +14,11 @@
         Task<HttpResponseMessage> EmployeeRegister(EmployeeRegisterParameters parameters);
 
         Task<IEnumerable<EmployeeReportParameters>> GetEmployeesByCompany();
+
+        Task UpdateEmployee(EmployeeUpdateParameters employeeUpdateParameters);
+
+        Task DeleteEmployeeRole(int id);
+
+        Task DeleteEmployeeDepartment(int id);
     }
 }

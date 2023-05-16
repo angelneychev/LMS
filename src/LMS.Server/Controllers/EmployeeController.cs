@@ -68,10 +68,12 @@
                 var roles = await userManager.GetRolesAsync(employee.User);
                 employeeReportItems.Add(new EmployeeReportParameters
                 {
+                    Id = employee.Id,
                     FullName = employee.User.FullName,
                     Email = employee.User.Email,
                     CompanyName = dbContext.Companies.FirstOrDefault(c => c.Id == loggedInEmployee.CompanyId)?.Name,
                     Role = string.Join(", ", roles),
+                    DepartmentId = employee.DepartmentId,
                     Department = employee.Department?.Name ?? "N/A"
                 });
             }
@@ -166,6 +168,129 @@
                     return this.BadRequest($"Error occurred while registering user and employee: {ex.Message}");
                 }
             }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateEmployee(EmployeeUpdateParameters employeeUpdateParameters)
+        {
+            var employee = await this.dbContext.Employees.FindAsync(employeeUpdateParameters.Id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            if (employeeUpdateParameters.RoleId != null)
+            {
+                var role = await this.roleManager.FindByIdAsync(employeeUpdateParameters.RoleId);
+                if (role == null)
+                {
+                    return BadRequest("Role does not exist.");
+                }
+
+                var user = await this.userManager.FindByIdAsync(employee.UserId);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+
+                if (role.Name == "Administrator")
+                {
+                    return BadRequest("Role 'Administrator' cannot be added or removed.");
+                }
+
+                var userHasRole = await this.userManager.IsInRoleAsync(user, role.Name);
+
+                if (employeeUpdateParameters.RemoveRole && userHasRole)
+                {
+                    var roleResult = await this.userManager.RemoveFromRoleAsync(user, role.Name);
+                    if (!roleResult.Succeeded)
+                    {
+                        return BadRequest(roleResult.Errors.FirstOrDefault()?.Description);
+                    }
+                }
+                else if (!employeeUpdateParameters.RemoveRole && !userHasRole)
+                {
+                    var roleResult = await this.userManager.AddToRoleAsync(user, role.Name);
+                    if (!roleResult.Succeeded)
+                    {
+                        return BadRequest(roleResult.Errors.FirstOrDefault()?.Description);
+                    }
+                }
+            }
+
+            if (employeeUpdateParameters.DepartmentId > 0)
+            {
+                employee.DepartmentId = employeeUpdateParameters.DepartmentId;
+                this.dbContext.Entry(employee).State = EntityState.Modified;
+            }
+            else
+            {
+                employee.DepartmentId = null;
+                this.dbContext.Entry(employee).State = EntityState.Modified;
+            }
+
+            // Add updates for other properties here when needed
+
+            await this.dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEmployeeRole(int id)
+        {
+            var employee = await dbContext.Employees.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            var user = await userManager.FindByIdAsync(employee.UserId);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            var roles = await userManager.GetRolesAsync(user);
+            if (roles.Contains("Administrator"))
+            {
+                return BadRequest("Role 'Administrator' cannot be removed.");
+            }
+
+            foreach (var role in roles)
+            {
+                var result = await userManager.RemoveFromRoleAsync(user, role);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEmployeeDepartment(int id)
+        {
+            var employee = await dbContext.Employees.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            if (employee.DepartmentId == null)
+            {
+                return BadRequest("Employee is not part of any department.");
+            }
+
+            employee.DepartmentId = null;
+            dbContext.Entry(employee).State = EntityState.Modified;
+
+            await dbContext.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

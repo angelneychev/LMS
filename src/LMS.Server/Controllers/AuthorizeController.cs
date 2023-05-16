@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -170,18 +171,29 @@
         public async Task<UserInfo> UserInfoAsync()
         {
             var user = await this.userManager.GetUserAsync(this.User);
-            return this.BuildUserInfo(user);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            var roles = await this.userManager.GetRolesAsync(user);
+            return this.BuildUserInfo(user, roles);
+            //return this.BuildUserInfo(user);
             //return this.BuildUserInfo();
         }
 
-        private UserInfo BuildUserInfo(ApplicationUser user)
+        private UserInfo BuildUserInfo(ApplicationUser user, IList<string> roles)
         {
             return new UserInfo
             {
                 IsAuthenticated = this.User.Identity.IsAuthenticated,
                 UserName = this.User.Identity.Name,
-                ExposedClaims = this.User.Claims.ToDictionary(c => c.Type, c => c.Value),
+                ExposedClaims = this.User.Claims
+                        .GroupBy(c => c.Type)
+                        .ToDictionary(g => g.Key, g => string.Join(", ", g.Select(c => c.Value))),
                 IsFirstLogin = user?.IsFirstLogin ?? false,
+                Roles = roles.ToList(),
             };
         }
 

@@ -1,6 +1,8 @@
 ﻿@page "/hr/employeereport"
 @attribute [Authorize(Roles = "Human Resources")]
 @inject IEmployeeApi EmployeeApi
+@inject IAuthorizeApi AuthorizeApi
+@inject IDepartmentApi DepartmentApi
 
 <div class="container-fluid h-100 my-3">
     <div class="row h-100 px-3">
@@ -24,7 +26,7 @@
                     </span>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
                                 <th>Full Name</th>
@@ -41,8 +43,50 @@
                                     <td>@item.FullName</td>
                                     <td>@item.Email</td>
                                     <td>@item.CompanyName</td>
-                                    <td>@item.Role</td>
-                                    <td>@item.Department</td>
+                                    <td>
+                                            @if (item.IsRoleEditing)
+                                            {
+                                            <InputSelect class="form-select" @bind-Value="item.Role">
+                                                <option value="">Select a role</option>
+                                                    @foreach (var role in roles)
+                                                    {
+                                                    <option value="@role.Key">@role.Value</option>
+                                                    }
+                                            </InputSelect>
+                                            <div class="d-flex mt-2">
+                                                <button class="btn btn-primary btn-sm" @onclick="() => UpdateEmployeeRole(item)" title="Save changes"><i class="bi bi-check-lg"></i></button>
+                                                <button class="btn btn-danger btn-sm ms-2" @onclick="() => UpdateEmployeeRole(item, true)" title="Delete role"><i class="bi bi-trash-fill"></i></button>
+                                                <button class="btn btn-secondary btn-sm ms-2" @onclick="() => CancelRoleEdit(item)" title="Cancel editing"><i class="bi bi-x-lg"></i></button>
+                                            </div>
+                                            }
+                                            else
+                                            {
+                                                @item.Role
+                                            <button class="btn btn-secondary btn-sm mt-2" @onclick="() => StartRoleEditing(item)" title="Edit role"><i class="bi bi-pencil-fill"></i></button>
+                                            }
+                                    </td>
+                                    <td>
+                                            @if (item.IsDepartmentEditing)
+                                            {
+                                            <InputSelect class="form-select" @bind-Value="item.DepartmentId">
+                                                <option value="">Select a department</option>
+                                                    @foreach (var department in departments)
+                                                    {
+                                                    <option value="@department.Key">@department.Value</option>
+                                                    }
+                                            </InputSelect>
+                                            <div class="d-flex mt-2">
+                                                <button class="btn btn-primary btn-sm" @onclick="() => UpdateEmployeeDepartment(item)" title="Save changes"><i class="bi bi-check-lg"></i></button>
+                                                <button class="btn btn-danger btn-sm ms-2" @onclick="() => UpdateEmployeeDepartment(item, true)" title="Delete department"><i class="bi bi-trash-fill"></i></button>
+                                                <button class="btn btn-secondary btn-sm ms-2" @onclick="() => CancelDepartmentEdit(item)" title="Cancel editing"><i class="bi bi-x-lg"></i></button>
+                                            </div>
+                                            }
+                                            else
+                                            {
+                                                @item.Department
+                                            <button class="btn btn-secondary btn-sm mt-2" @onclick="() => StartDepartmentEditing(item)" title="Edit department"><i class="bi bi-pencil-fill"></i></button>
+                                            }
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -54,13 +98,18 @@
 </div>
 
 
+
 @code {
     private IEnumerable<EmployeeReportParameters> employeeReportParameters;
+    private IEnumerable<KeyValuePair<string, string>> roles = new List<KeyValuePair<string, string>>();
+    private IEnumerable<KeyValuePair<string, string>> departments = new List<KeyValuePair<string, string>>();
     private string searchText = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         employeeReportParameters = await EmployeeApi.GetEmployeesByCompany();
+        roles = await AuthorizeApi.GetAllRolesAsKeyValuePairs();
+        departments = await DepartmentApi.GetAllDepartmentsAsKeyValuePairs();
     }
 
     private IEnumerable<EmployeeReportParameters> FilterEmployees()
@@ -71,5 +120,56 @@
         }
 
         return employeeReportParameters.Where(e => e.FullName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task UpdateEmployeeRole(EmployeeReportParameters item, bool removeRole = false)
+    {
+        var employeeUpdateParameters = new EmployeeUpdateParameters
+            {
+                Id = item.Id,
+                RoleId = item.Role,
+                RemoveRole = removeRole
+            };
+
+        await EmployeeApi.UpdateEmployee(employeeUpdateParameters);
+        await OnInitializedAsync();
+    }
+
+    private async Task UpdateEmployeeDepartment(EmployeeReportParameters item, bool removeDepartment = false)
+    {
+        var employeeUpdateParameters = new EmployeeUpdateParameters
+        {
+            Id = item.Id,
+            DepartmentId = item.DepartmentId,
+            RemoveDepartment = removeDepartment,
+        };
+
+        if (removeDepartment) 
+        {
+            employeeUpdateParameters.DepartmentId = null;
+        }
+
+        await EmployeeApi.UpdateEmployee(employeeUpdateParameters);
+        await OnInitializedAsync();
+    }
+
+    private void StartRoleEditing(EmployeeReportParameters item)
+    {
+        item.IsRoleEditing = true;
+    }
+
+    private void CancelRoleEdit(EmployeeReportParameters item)
+    {
+        item.IsRoleEditing = false;
+    }
+
+    private void StartDepartmentEditing(EmployeeReportParameters item)
+    {
+        item.IsDepartmentEditing = true;
+    }
+
+    private void CancelDepartmentEdit(EmployeeReportParameters item)
+    {
+        item.IsDepartmentEditing = false;
     }
 }

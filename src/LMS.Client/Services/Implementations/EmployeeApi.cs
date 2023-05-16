@@ -25,5 +25,13 @@
         public async Task<HttpResponseMessage> EmployeeRegister(EmployeeRegisterParameters parameters)
            => await this.httpClient.PostAsJsonAsync("api/Employee/EmployeeRegister", parameters);
 
+        public async Task UpdateEmployee(EmployeeUpdateParameters employeeUpdateParameters)
+            => await this.httpClient.PutAsJsonAsync("api/Employee/UpdateEmployee", employeeUpdateParameters);
+
+        public async Task DeleteEmployeeRole(int id)
+            => await httpClient.DeleteAsync($"api/Employee/DeleteEmployeeRole/{id}");
+
+        public async Task DeleteEmployeeDepartment(int id)
+            => await httpClient.DeleteAsync($"api/Employee/DeleteEmployeeDepartment/{id}");
     }
 }
